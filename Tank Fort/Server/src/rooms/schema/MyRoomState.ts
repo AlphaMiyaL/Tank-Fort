@@ -1,9 +1,9 @@
 import { Schema, MapSchema, Context, type } from "@colyseus/schema";
 
 export class NetworkedEntity extends Schema {
+  @type("boolean") isPlayer: boolean = false;
   @type("string") id: string;
   @type("string") ownerId: string;
-  @type("string") creationId: string = "";
   @type("number") xPos: number = 0;
   @type("number") yPos: number = 0;
   @type("number") zPos: number = 0;
@@ -25,6 +25,7 @@ export class NetworkedUser extends Schema {
   @type("string") sessionId: string;
   @type("boolean") connected: boolean;
   @type("number") timestamp: number;
+  @type("string") nickname: string;
   @type({map: "string"}) attributes = new MapSchema<string>();
 }
 
