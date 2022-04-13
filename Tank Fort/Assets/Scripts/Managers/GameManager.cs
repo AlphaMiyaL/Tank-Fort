@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-//using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -22,12 +22,16 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        StartGame();
+    }
+    public void StartGame()
+    {
         // Create delays so they only have to be made once
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
         SpawnAllTanks();
-        SetCameraTargets();
+        //SetCameraTargets();
 
         // Once tanks have been created and camera is using them as targets, start game
         StartCoroutine(GameLoop());
@@ -75,7 +79,8 @@ public class GameManager : MonoBehaviour
         if (m_GameWinner != null)
         {
             //If there is game winner, restart level
-            Application.LoadLevel(Application.loadedLevel);
+            //Application.LoadLevel(Application.loadedLevel);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {

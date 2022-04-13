@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectionHandler : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class SelectionHandler : MonoBehaviour
     private SelectionPlayer currentSelectionPlayer;
     public SelectionBoard Board;
     public SelectionGrid Grid;
+    public GameObject PlayerSelectingPanel;
+    public Text PlayerSelectingText;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +30,7 @@ public class SelectionHandler : MonoBehaviour
     public void SelectionBoard()
     {
         Board.gameObject.SetActive(false);
+        PlayerSelectingPanel.SetActive(false);
         Grid.gameObject.SetActive(true);
     }
     public void SelectionGrid()
@@ -36,6 +40,7 @@ public class SelectionHandler : MonoBehaviour
         if (currentSelectionPlayer)
         {
             Board.gameObject.SetActive(true);
+            displayPlayerSelection();
         }
         else
         {
@@ -55,22 +60,7 @@ public class SelectionHandler : MonoBehaviour
         Instantiate(player.item.Prefab, quadPos, Quaternion.identity);
 
     }
-    //private void handleMouseClick()
-    //{
-    //    RaycastHit hit;
-    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-    //    if (Physics.Raycast(ray, out hit))
-    //    {
-    //        if (hit.transform.GetComponent<SelectionObject>())
-    //        {
-                
-    //            PlayerSelectItem(hit.transform.GetComponent<SelectionObject>());
-    //            getNextCurrentSelectionPlayer();
-                
-    //        }
-    //    }
-    //}
 
     void getNextCurrentSelectionPlayer()
     {
@@ -102,6 +92,13 @@ public class SelectionHandler : MonoBehaviour
             Players[rand] = temp;
         }
         currentSelectionPlayer = Players[0];
+        displayPlayerSelection();
+    }
+
+    void displayPlayerSelection()
+    {
+        PlayerSelectingPanel.SetActive(true);
+        PlayerSelectingText.text = $"Player {currentSelectionPlayer.ID+1} Selecting";
     }
 
     void setupItems()
