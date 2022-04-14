@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraSetup : MonoBehaviour {
-    public Camera mainCamera;
+    public Camera selectionCamera;
     public Camera cam1;
     public Camera cam2;
     public bool Horizontal;
 
     private void Start() {
-        ChangeSplitScreen();
+        //ChangeSplitScreen();
     }
 
     private void ChangeSplitScreen() {
@@ -21,6 +21,23 @@ public class CameraSetup : MonoBehaviour {
         else {
             cam1.rect = new Rect(0, 0, 0.5f, 1);
             cam2.rect = new Rect(0.5f, 0, 0.5f, 1);
+        }
+    }
+
+    public void SetCameras(bool isSelection)
+    {
+        if (isSelection)
+        {
+            selectionCamera.gameObject.SetActive(true);
+            cam1.gameObject.SetActive(false);
+            cam2.gameObject.SetActive(false);
+        }
+        else
+        {
+            selectionCamera.gameObject.SetActive(false);
+            cam1.gameObject.SetActive(true);
+            cam2.gameObject.SetActive(true);
+            ChangeSplitScreen();
         }
     }
 }

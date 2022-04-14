@@ -31,6 +31,10 @@ public class SelectionBoard : MonoBehaviour
     }
     public void PlaceObjects(SelectionItem[] items)
     {
+        foreach(SelectionObject item in GetComponentsInChildren<SelectionObject>())
+        {
+            Destroy(item.gameObject);
+        }
         List<Vector2Int> positions = new List<Vector2Int>();
         float maxRadius = 0;
         foreach (SelectionItem item in items)

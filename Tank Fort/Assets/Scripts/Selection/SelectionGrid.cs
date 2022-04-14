@@ -9,28 +9,51 @@ public class SelectionGrid : MonoBehaviour
     public Vector2 gridSize;
     private SelectionQuad[,] selectionQuads;
     private SelectionQuad selectedQuad;
+    public Camera SelectionCamera;
+    public float groundOffset;
+    public float afterSelectionDelay = 1;
+    private float afterSelectionDelayStart;
+    bool isSelecting;
 
     // Start is called before the first frame update
     void Start()
     {
         //buildGrid();
     }
-
+    private void OnEnable()
+    {
+        StartSelecting();
+    }
     // Update is called once per frame
     void Update()
     {
-        handleGridSelection();
-        if(selectedQuad && Input.GetMouseButtonDown(0))
+        if (isSelecting)
         {
-            FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(selectedQuad);
-            FindObjectOfType<SelectionHandler>().SelectionGrid();
+            handleGridSelection();
+            if (selectedQuad && !selectedQuad.HasItem() && Input.GetMouseButtonDown(0))
+            {
+                FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(selectedQuad);
+                StartCoroutine(finishSelection());
+                isSelecting = false;
+            }
         }
+        
+
+    }
+    public void StartSelecting()
+    {
+        isSelecting = true;
+    }
+    private IEnumerator finishSelection()
+    {
+        yield return new WaitForSeconds(afterSelectionDelay);
+        FindObjectOfType<SelectionHandler>().SelectionGrid();
     }
 
     private void handleGridSelection()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = SelectionCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit))
         {

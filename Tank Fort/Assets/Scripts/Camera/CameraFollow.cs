@@ -12,12 +12,16 @@ public class CameraFollow : MonoBehaviour
     private TankMovement m_Movement;        // Reference to tank's movement script
 
     private void FixedUpdate() {
-        Rotate();
-        Vector3 desiredPosition = target.transform.position;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed*Time.deltaTime);
-        transform.position = smoothedPosition;
-        Quaternion desiredRotation = target.rotation * rotationOffset;
-        transform.rotation = desiredRotation;
+        if (target)
+        {
+            Rotate();
+            Vector3 desiredPosition = target.transform.position;
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+            transform.position = smoothedPosition;
+            Quaternion desiredRotation = target.rotation * rotationOffset;
+            transform.rotation = desiredRotation;
+        }
+        
     }
 
     void Rotate() {

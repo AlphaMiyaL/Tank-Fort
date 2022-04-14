@@ -15,23 +15,80 @@ public class SelectionHandler : MonoBehaviour
     public SelectionGrid Grid;
     public GameObject PlayerSelectingPanel;
     public Text PlayerSelectingText;
+    private List<SelectionQuad> SelectedQuads = new List<SelectionQuad>();
 
     // Start is called before the first frame update
     void Start()
     {
+       
+    }
+    
+
+    public void StartSelection()
+    {
         setupPlayers();
         setupItems();
         Board.gameObject.SetActive(true);
-        Grid.BuildGrid();
+        setupGrid();
         Grid.gameObject.SetActive(false);
+        //Grid.SelectionCamera.enabled = true;
+    }
+    void setupItems()
+    {
+        setupBoard(SelectionItems);
     }
 
-    
+    #region SelectionBoard
+
     public void SelectionBoard()
     {
         Board.gameObject.SetActive(false);
         PlayerSelectingPanel.SetActive(false);
         Grid.gameObject.SetActive(true);
+    }
+
+    private void setupBoard(SelectionItem[] SelectionItems)
+    {
+        
+        Board.PlaceObjects(SelectionItems);
+    }
+
+    public void PlayerSelectItem(SelectionObject item)
+    {
+        PlayerSelectItem(currentSelectionPlayer.ID, item);
+    }
+
+    public void PlayerSelectItem(int playerID, SelectionObject item)
+    {
+        SelectionPlayer player = GetSelectionPlayer(playerID);
+        player.item = item.item;
+        Debug.Log($"Player {player.ID} item {item.item} set.");
+        removeSelectionItem(item);
+
+    }
+
+    private void removeSelectionItem(SelectionObject item)
+    {
+        item.gameObject.SetActive(false);
+    }
+    #endregion
+
+    #region SelectionGrid
+    private void setupGrid()
+    {
+        if(SelectedQuads.Count > 0)
+        {
+            foreach(SelectionQuad quad in SelectedQuads)
+            {
+                quad.RemoveItem();
+            }
+            SelectedQuads.Clear();
+        }
+        else
+        {
+            Grid.BuildGrid();
+        }
+        
     }
     public void SelectionGrid()
     {
@@ -45,6 +102,7 @@ public class SelectionHandler : MonoBehaviour
         else
         {
             //game start
+            FindObjectOfType<GameManager>().StartGame();
 
         }
     }
@@ -56,11 +114,13 @@ public class SelectionHandler : MonoBehaviour
     public void PlayerSelectsQuad(int playerID, SelectionQuad quad)
     {
         SelectionPlayer player = GetSelectionPlayer(playerID);
-        Vector3 quadPos = quad.transform.position;
-        Instantiate(player.item.Prefab, quadPos, Quaternion.identity);
-
+        Vector3 quadPos = quad.transform.position - Vector3.up * Grid.groundOffset;
+        GameObject item = Instantiate(player.item.Prefab, quadPos, Quaternion.identity);
+        quad.SetSelected(item);
+        SelectedQuads.Add(quad);
     }
 
+    #endregion
 
     void getNextCurrentSelectionPlayer()
     {
@@ -77,12 +137,16 @@ public class SelectionHandler : MonoBehaviour
 
     void setupPlayers()
     {
-        for(int i = 0; i < PlayerCount; i += 1)
+        if(Players.Count == 0)
         {
-            SelectionPlayer newPlayer = PlayerPrefabs[i];
-            //newPlayer.ID = i;
-            Players.Add(newPlayer);
-        } 
+            for (int i = 0; i < PlayerCount; i += 1)
+            {
+                SelectionPlayer newPlayer = PlayerPrefabs[i];
+                //newPlayer.ID = i;
+                Players.Add(newPlayer);
+            }
+        }
+        
         
         for(int i = 0; i < Players.Count; i += 1)
         {
@@ -101,37 +165,13 @@ public class SelectionHandler : MonoBehaviour
         PlayerSelectingText.text = $"Player {currentSelectionPlayer.ID+1} Selecting";
     }
 
-    void setupItems()
-    {
-        Board.PlaceObjects(SelectionItems);
-    }
-
-    public void PlayerSelectItem(SelectionObject item)
-    {
-        PlayerSelectItem(currentSelectionPlayer.ID, item);
-    }
-
-    public void PlayerSelectItem(int playerID, SelectionObject item)
-    {
-        SelectionPlayer player = GetSelectionPlayer(playerID);
-        player.item = item.item;
-        Debug.Log($"Player {player.ID} item {item.item} set.");
-        removeSelectionItem(item);
-        
-    }
-
     public SelectionPlayer GetSelectionPlayer(int playerID)
     {
-        foreach(SelectionPlayer player in Players)
+        foreach (SelectionPlayer player in Players)
         {
             if (player.ID == playerID) return player;
         }
         Debug.LogWarning($"playerID {playerID} not found.");
         return null;
-    }
-
-    private void removeSelectionItem(SelectionObject item)
-    {
-        item.gameObject.SetActive(false);
     }
 }

@@ -20,20 +20,50 @@ public class GameManager : MonoBehaviour
     private TankManager m_RoundWinner;          // Reference to winner of current round; Used to make announcement of who won
     private TankManager m_GameWinner;           // Reference to winner of game; Used to make announcement of who won
 
+    public SelectionHandler SelectionHandler;
+    public CameraSetup CameraSetup;
+    [SerializeField]private Animator tankTransition;
+
     private void Start()
     {
-        StartGame();
+        //StartCoroutine(TankTransition());
+        StartCoroutine(StartSelection());
+    }
+
+    public void TankTransition(bool closed)
+    {
+        tankTransition.SetBool("Close", closed);
+        //yield return new WaitForSeconds(1);
+    }
+    public IEnumerator StartSelection()
+    {
+        TankTransition(true);
+        yield return new WaitForSeconds(1);
+        m_MessageText.text = "";
+        CameraSetup.SetCameras(true);
+        SelectionHandler.StartSelection();
+        TankTransition(false);
+        yield return new WaitForSeconds(1);
     }
     public void StartGame()
     {
+        StartCoroutine(startGame());
+    }
+    private IEnumerator startGame()
+    {
+        TankTransition(true);
+        yield return new WaitForSeconds(1);
+        CameraSetup.SetCameras(false);
+
         // Create delays so they only have to be made once
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        SpawnAllTanks();
+        if(m_RoundNumber == 0) SpawnAllTanks();
         //SetCameraTargets();
 
         // Once tanks have been created and camera is using them as targets, start game
+        
         StartCoroutine(GameLoop());
     }
 
@@ -86,7 +116,8 @@ public class GameManager : MonoBehaviour
         {
             // If there isn't winner yet, restart coroutine so loop continues
             // Note this coroutine doesn't yield;  This means current version of GameLoop will end
-            StartCoroutine(GameLoop());
+            //StartCoroutine(GameLoop());
+            StartCoroutine(StartSelection());
         }
     }
 
@@ -98,12 +129,14 @@ public class GameManager : MonoBehaviour
         DisableTankControl();
 
         // Snap camera's zoom and position to something appropriate for reset tanks
-        m_CameraControl.SetStartPositionAndSize();
+        //m_CameraControl.SetStartPositionAndSize();
 
         // Increment round number and display text showing players what round it is
         m_RoundNumber++;
         m_MessageText.text = "BATTLE ROUND " + m_RoundNumber;
 
+        TankTransition(false);
+        //yield return new WaitForSeconds(1);
         // Wait for specified length of time until yielding control back to game loop
         yield return m_StartWait;
     }
