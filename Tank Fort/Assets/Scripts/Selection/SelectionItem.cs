@@ -6,7 +6,7 @@ using UnityEngine;
 public class SelectionItem : ScriptableObject
 {
     public Sprite sprite;
-    public GameObject Prefab;
+    public GameObject SelectionPrefab;
     public GameObject ObstaclePrefab;
     //public float ItemRadius = 1;
 

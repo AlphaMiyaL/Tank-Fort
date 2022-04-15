@@ -10,6 +10,7 @@ public class SelectionHandler : MonoBehaviour
     public SelectionPlayer[] PlayerPrefabs;
     public List<SelectionPlayer> Players;
     public SelectionItem[] SelectionItems;
+    public int SelectionItemCount = 4;
     private SelectionPlayer currentSelectionPlayer;
     public SelectionBoard Board;
     public SelectionGrid Grid;
@@ -35,7 +36,18 @@ public class SelectionHandler : MonoBehaviour
     }
     void setupItems()
     {
-        setupBoard(SelectionItems);
+        List<SelectionItem> selectionItems = new List<SelectionItem>();
+        while(selectionItems.Count < SelectionItemCount && selectionItems.Count < SelectionItems.Length)
+        {
+            int randomItem = Random.Range(0, SelectionItems.Length);
+            if (!selectionItems.Contains(SelectionItems[randomItem]))
+            {
+                selectionItems.Add(SelectionItems[randomItem]);
+            }
+
+
+        }
+        setupBoard(selectionItems.ToArray());
     }
 
     #region SelectionBoard
@@ -115,7 +127,7 @@ public class SelectionHandler : MonoBehaviour
     {
         SelectionPlayer player = GetSelectionPlayer(playerID);
         Vector3 quadPos = quad.transform.position - Vector3.up * Grid.groundOffset;
-        GameObject item = Instantiate(player.item.Prefab, quadPos, Quaternion.identity);
+        GameObject item = Instantiate(player.item.ObstaclePrefab, quadPos, Quaternion.identity);
         quad.SetSelected(item);
         SelectedQuads.Add(quad);
     }

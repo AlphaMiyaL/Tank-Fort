@@ -12,7 +12,7 @@ public class SelectionBoard : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) handleMouseClick();
     }
-    private void handleMouseClick()
+    protected virtual void handleMouseClick()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -22,14 +22,17 @@ public class SelectionBoard : MonoBehaviour
             if (hit.transform.GetComponent<SelectionObject>())
             {
 
-                FindObjectOfType<SelectionHandler>(). PlayerSelectItem(hit.transform.GetComponent<SelectionObject>());
-                FindObjectOfType<SelectionHandler>().SelectionBoard();
-                //getNextCurrentSelectionPlayer();
-                //gameObject.SetActive(false);
+                SelectionObjectClicked(hit.transform.GetComponent<SelectionObject>());
+                
             }
         }
     }
-    public void PlaceObjects(SelectionItem[] items)
+    public void SelectionObjectClicked(SelectionObject selectionObject)
+    {
+        FindObjectOfType<SelectionHandler>().PlayerSelectItem(selectionObject);
+        FindObjectOfType<SelectionHandler>().SelectionBoard();
+    }
+    public virtual void PlaceObjects(SelectionItem[] items)
     {
         foreach(SelectionObject item in GetComponentsInChildren<SelectionObject>())
         {
@@ -39,7 +42,7 @@ public class SelectionBoard : MonoBehaviour
         float maxRadius = 0;
         foreach (SelectionItem item in items)
         {
-            if (maxRadius < item.Prefab.GetComponent<SelectionObject>().Radius) maxRadius = item.Prefab.GetComponent<SelectionObject>().Radius;
+            if (maxRadius < item.SelectionPrefab.GetComponent<SelectionObject>().Radius) maxRadius = item.SelectionPrefab.GetComponent<SelectionObject>().Radius;
         }
 
         int xGrid = (int)(width / (2 * maxRadius));
@@ -65,7 +68,7 @@ public class SelectionBoard : MonoBehaviour
 
     void placeSelectionItem(SelectionItem prefab, Vector2 pos)
     {
-        SelectionObject item = Instantiate(prefab.Prefab, new Vector3(pos.x, bottomOffset + transform.position.y, pos.y), Quaternion.identity).GetComponent<SelectionObject>();
+        SelectionObject item = Instantiate(prefab.SelectionPrefab, new Vector3(pos.x, bottomOffset + transform.position.y, pos.y), Quaternion.identity).GetComponent<SelectionObject>();
         item.transform.parent = transform;
         placedItems.Add(prefab);
     }
