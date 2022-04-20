@@ -28,7 +28,7 @@ public class ShellExplosion : MonoBehaviour
             Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
 
             // If they don't have rigidbody, go on to next collider
-            if (!targetRigidbody)
+            if (!targetRigidbody && !colliders[i].isTrigger)
                 continue;
 
             // Add explosion force
