@@ -17,6 +17,7 @@ public class SelectionHandler : MonoBehaviour
     public GameObject PlayerSelectingPanel;
     public Text PlayerSelectingText;
     private List<SelectionQuad> SelectedQuads = new List<SelectionQuad>();
+    public bool clearItems;
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +58,19 @@ public class SelectionHandler : MonoBehaviour
         Board.gameObject.SetActive(false);
         PlayerSelectingPanel.SetActive(false);
         Grid.gameObject.SetActive(true);
+
+        setupGridItem();
+    }
+
+    private void setupGridItem()
+    {
+        Grid.itemSize = currentSelectionPlayer.item.size;
+        Vector3 quadPosOffset = Vector3.up * Grid.transform.position.y - Vector3.up * Grid.groundOffset;
+        Vector3 itemOffset = currentSelectionPlayer.item.centerOffset;
+        GameObject item = Instantiate(currentSelectionPlayer.item.ObstaclePrefab, quadPosOffset + itemOffset, Quaternion.identity);
+        
+        Grid.SelectedItem = item.transform;
+        item.SetActive(false);
     }
 
     private void setupBoard(SelectionItem[] SelectionItems)
@@ -88,7 +102,7 @@ public class SelectionHandler : MonoBehaviour
     #region SelectionGrid
     private void setupGrid()
     {
-        if(SelectedQuads.Count > 0)
+        if(clearItems && SelectedQuads.Count > 0)
         {
             foreach(SelectionQuad quad in SelectedQuads)
             {
@@ -126,9 +140,10 @@ public class SelectionHandler : MonoBehaviour
     public void PlayerSelectsQuad(int playerID, SelectionQuad quad)
     {
         SelectionPlayer player = GetSelectionPlayer(playerID);
-        Vector3 quadPos = quad.transform.position - Vector3.up * Grid.groundOffset;
-        GameObject item = Instantiate(player.item.ObstaclePrefab, quadPos, Quaternion.identity);
-        quad.SetSelected(item);
+        //Vector3 quadPos = quad.transform.position - Vector3.up * Grid.groundOffset;
+        //Vector3 itemOffset = player.item.centerOffset;
+        //GameObject item = Instantiate(player.item.ObstaclePrefab, quadPos + itemOffset, Quaternion.identity);
+        //quad.SetSelected(item);
         SelectedQuads.Add(quad);
     }
 

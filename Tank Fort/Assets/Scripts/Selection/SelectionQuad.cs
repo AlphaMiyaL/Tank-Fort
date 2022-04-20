@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SelectionQuad : MonoBehaviour
 {
-    private GameObject myItem;
+    public GameObject myItem;
     public Material m_Normal, m_Selected;
     int x, z;
     public void Setup(Vector2 size, Vector3 pos, int x, int z)
@@ -13,6 +13,20 @@ public class SelectionQuad : MonoBehaviour
         this.z = z;
         transform.localScale = new Vector3(size.x, size.y, 1);
         transform.position = pos;
+
+        RaycastHit hit;
+        
+        if (Physics.Raycast(transform.position + Vector3.up * 10, Vector3.down, out hit))
+        { 
+            if (hit.transform != transform)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public Vector2Int GetIndex()
@@ -32,7 +46,7 @@ public class SelectionQuad : MonoBehaviour
     }
     public bool HasItem()
     {
-        return myItem;
+        return myItem != null;
     }
 
     public void RemoveItem()

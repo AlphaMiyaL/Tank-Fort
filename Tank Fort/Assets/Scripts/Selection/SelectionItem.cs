@@ -8,7 +8,8 @@ public class SelectionItem : ScriptableObject
     public Sprite sprite;
     public GameObject SelectionPrefab;
     public GameObject ObstaclePrefab;
+    public Vector3 centerOffset;
     //public float ItemRadius = 1;
-
+    public Vector2 size;
 
 }

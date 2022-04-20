@@ -25,7 +25,7 @@ public class Turret : MonoBehaviour
     [SerializeField]
     private Animator animator;
 
-    public Quaternion DefaultRotation { get; set; }
+    public Quaternion DefaultRotation { get { return transform.rotation; }  }
     public Transform Rotator { get => rotator; set => rotator = value; }
     public Vector3 AimOffset { get => aimOffset; set => aimOffset = value; }
     public Transform GhostRotator { get => ghostRotator; set => ghostRotator = value; }
@@ -35,7 +35,7 @@ public class Turret : MonoBehaviour
 
     private void Start() {
         // Sets default rotation and then changes state to IdleState
-        DefaultRotation = rotator.rotation;
+        //DefaultRotation = rotator.rotation;
         ChangeState(new IdleState());
     }
 
