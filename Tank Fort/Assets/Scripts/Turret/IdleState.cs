@@ -17,7 +17,7 @@ public class IdleState : TurretState
         }
 
         // (If target still exists while in IdleMode, the last target hid behind something, but is still in the collider space)
-        // Send raycasst from gunbarrel to player, and if hit, change state to FindTargetState
+        // Send raycast from gunbarrel to player, and if hit, change state to FindTargetState
         if (parent.Target != null) {
             if (parent.CanSeeTarget(((parent.Target.position+parent.AimOffset) - parent.GunBarrels[0].position), parent.GunBarrels[0].position, "Player")){
                 parent.ChangeState(new FindTargetState());

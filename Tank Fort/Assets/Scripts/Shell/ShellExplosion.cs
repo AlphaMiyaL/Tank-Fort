@@ -20,46 +20,48 @@ public class ShellExplosion : MonoBehaviour
     // Find all tanks in area around the shell and damage them
     // On Trigger will allow it to run this whenever it hits anything
     private void OnTriggerEnter(Collider other){
-        // Collect all colliders in a sphere from shell's current pos to a radius of the explosion radius
-        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
+        if(!other.isTrigger){
+            // Collect all colliders in a sphere from shell's current pos to a radius of the explosion radius
+            Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
 
-        // Go through all colliders and find their rigidbody
-        for (int i=0; i<colliders.Length; i++) {
-            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+            // Go through all colliders and find their rigidbody
+            for (int i = 0; i < colliders.Length; i++) {
+                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
 
-            // If they don't have rigidbody, go on to next collider
-            if (!targetRigidbody && !colliders[i].isTrigger)
-                continue;
+                // If they don't have rigidbody, go on to next collider
+                if (!targetRigidbody)
+                    continue;
 
-            // Add explosion force
-            targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
+                // Add explosion force
+                targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
-            // Find TankHealth script associated with rigidbody
-            TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
+                // Find TankHealth script associated with rigidbody
+                TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
-            // If no TankHealth script attached to gameobject, go on to next collider
-            if (!targetHealth)
-                continue;
+                // If no TankHealth script attached to gameobject, go on to next collider
+                if (!targetHealth)
+                    continue;
 
-            // Calculate amount of damage target should take based on distance from shell
-            float damage = CalculateDamage(targetRigidbody.position);
+                // Calculate amount of damage target should take based on distance from shell
+                float damage = CalculateDamage(targetRigidbody.position);
 
-            // Deal this damage to the tank
-            targetHealth.TakeDamage(damage);
+                // Deal this damage to the tank
+                targetHealth.TakeDamage(damage);
+            }
+            // Unparent particles from the shell
+            // allows the explosion sound and particles to continue to happen after shell game object is deleted
+            m_ExplosionParticles.transform.parent = null;
+
+            // Play particle system and explosion sound effect
+            m_ExplosionParticles.Play();
+            m_ExplosionAudio.Play();
+
+            // Once particles have finished, destroy gameobject they are on
+            Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
+
+            // Destroy shell
+            Destroy(gameObject);
         }
-        // Unparent particles from the shell
-        // allows the explosion sound and particles to continue to happen after shell game object is deleted
-        m_ExplosionParticles.transform.parent = null;
-
-        // Play particle system and explosion sound effect
-        m_ExplosionParticles.Play();
-        m_ExplosionAudio.Play();
-
-        // Once particles have finished, destroy gameobject they are on
-        Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
-
-        // Destroy shell
-        Destroy(gameObject);
     }
 
 
