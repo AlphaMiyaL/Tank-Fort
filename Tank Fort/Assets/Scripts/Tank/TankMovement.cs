@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class TankMovement : MonoBehaviour{
     public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player; This is set by this tank's manager
@@ -135,5 +136,13 @@ private void FixedUpdate(){
 
         // Apply this rotation to the rigidbody's rotation
         m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
+    }
+
+    public IEnumerator IncreaseSpeed(float speed, float duration) {
+        //Play Particle Effect and increase speed
+        m_Speed += speed;
+        yield return new WaitForSeconds(duration);
+        //Stop Particle Effect and reduce speed
+        m_Speed -= speed;
     }
 }
