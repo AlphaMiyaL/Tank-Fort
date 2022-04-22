@@ -67,8 +67,10 @@ public class SelectionHandler : MonoBehaviour
         Grid.itemSize = currentSelectionPlayer.item.size;
         Vector3 quadPosOffset = Vector3.up * Grid.transform.position.y - Vector3.up * Grid.groundOffset;
         Vector3 itemOffset = currentSelectionPlayer.item.centerOffset;
-        GameObject item = Instantiate(currentSelectionPlayer.item.ObstaclePrefab, quadPosOffset + itemOffset, Quaternion.identity);
-        
+        GameObject item = Instantiate(currentSelectionPlayer.item.ObstaclePrefab);
+        item.transform.position = quadPosOffset + itemOffset;
+
+
         Grid.SelectedItem = item.transform;
         item.SetActive(false);
     }

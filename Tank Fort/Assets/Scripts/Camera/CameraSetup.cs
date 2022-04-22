@@ -7,13 +7,14 @@ public class CameraSetup : MonoBehaviour {
     public Camera cam1;
     public Camera cam2;
     public bool Horizontal;
+    public bool FlippingHorizontal;
 
     private void Start() {
         //ChangeSplitScreen();
     }
 
     private void ChangeSplitScreen() {
-        Horizontal = !Horizontal;
+        if (FlippingHorizontal) Horizontal = !Horizontal;
         if (Horizontal) {
             cam1.rect = new Rect(0, 0, 1, 0.5f);
             cam2.rect = new Rect(0, 0.5f, 1, 0.5f);
