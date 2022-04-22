@@ -58,7 +58,7 @@ public class SelectionHandler : MonoBehaviour
         Board.gameObject.SetActive(false);
         PlayerSelectingPanel.SetActive(false);
         Grid.gameObject.SetActive(true);
-
+        
         setupGridItem();
     }
 
@@ -70,8 +70,9 @@ public class SelectionHandler : MonoBehaviour
         GameObject item = Instantiate(currentSelectionPlayer.item.ObstaclePrefab);
         item.transform.position = quadPosOffset + itemOffset;
 
-
+        Grid.RemoveRadius = currentSelectionPlayer.item.damage;
         Grid.SelectedItem = item.transform;
+
         item.SetActive(false);
     }
 

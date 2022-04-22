@@ -17,6 +17,16 @@ public class SelectionGrid : MonoBehaviour
     public Vector2 itemSize;
     public Transform SelectedItem { set { selectedItem = value; } }
     private Transform selectedItem;
+    public int RemoveRadius {
+        set
+        {
+            removeRadius = value;
+            if (removeRadius >= 0) removingObstacles = true;
+            else removingObstacles = false;
+        }
+    }
+    private int removeRadius;
+    private bool removingObstacles;
 
     // Start is called before the first frame update
     void Start()
@@ -34,41 +44,55 @@ public class SelectionGrid : MonoBehaviour
         {
             handleGridSelection();
             //display item in correct quad
-            if (selectedQuad && !selectedQuad.HasItem())
+            if (selectedQuad && (!selectedQuad.HasItem() || removingObstacles))
             {
                 selectedItem.gameObject.SetActive(transform);
                 selectedItem.position = new Vector3(selectedQuad.transform.position.x, selectedItem.position.y, selectedQuad.transform.position.z);
             }
             else
             {
-
                 selectedItem.gameObject.SetActive(false);
             }
 
             //rotate item with right click
             if (selectedQuad && !selectedQuad.HasItem() && Input.GetMouseButtonUp(1))
             {
-                selectedItem.Rotate(new Vector3(0, 90, 0));
-                
+                selectedItem.transform.Rotate(0, 90, 0, Space.World); 
             }
 
             //place item with left click
-            if (selectedQuad && !selectedQuad.HasItem() && Input.GetMouseButtonDown(0))
+            if ((selectedQuad || !selectedQuad.HasItem()) && Input.GetMouseButtonDown(0))
             {
-                FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(selectedQuad);
-                isSelecting = false;
-                selectedQuad.SetSelected(selectedItem.gameObject);
-                StartCoroutine(finishSelection());
+                if (removingObstacles)
+                {
+                    Destroy(selectedItem.gameObject);
+                    int x = selectedQuad.x;
+                    int z = selectedQuad.z;
+                    for (int r = 0; r <= removeRadius; r += 1)
+                    {
+                        destroyObstacle(x + r, z);
+                        destroyObstacle(x, z + r);
+                        destroyObstacle(x - r, z);
+                        destroyObstacle(x, z - r);
+                        destroyObstacle(x + r, z + r);
+                        destroyObstacle(x + r, z - r);
+                        destroyObstacle(x - r, z + r);
+                        destroyObstacle(x - r, z - r);
+                    }
+                }
+                else
+                {
+                    FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(selectedQuad);
+                    selectedQuad.SetSelected(selectedItem.gameObject);
+                }
                 
+                isSelecting = false;
+                
+                StartCoroutine(finishSelection());
             }
-
-            
-
-
         }
-        
-
     }
+    
     public void StartSelecting()
     {
         
@@ -103,7 +127,7 @@ public class SelectionGrid : MonoBehaviour
                     selectedQuad = current;
                     //current.SetSelected(true);
                 }
-                if(!current.HasItem() )current.SetSelected(true);
+                if(!current.HasItem() || removingObstacles)current.SetSelected(true);
             }
             else if(selectedQuad)
             {
@@ -133,5 +157,16 @@ public class SelectionGrid : MonoBehaviour
                 quad.Setup(gridSize, pos, x, z);
             }
         }
+    }
+    private void destroyObstacle(int x, int z)
+    {
+        if (x >= 0 && x <= width && z >= 0 && z <= height && selectionQuads[x, z] != null)
+        {
+            //Debug.Log($"Destroying {selectionQuads[x, z].name}");
+            Destroy(selectionQuads[x, z].myItem);
+            selectionQuads[x, z].myItem = null;
+            
+        }
+        
     }
 }

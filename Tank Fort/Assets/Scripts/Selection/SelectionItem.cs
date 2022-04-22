@@ -11,5 +11,6 @@ public class SelectionItem : ScriptableObject
     public Vector3 centerOffset;
     //public float ItemRadius = 1;
     public Vector2 size;
+    public int damage = -1;
 
 }

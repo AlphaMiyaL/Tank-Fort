@@ -6,7 +6,7 @@ public class SelectionQuad : MonoBehaviour
 {
     public GameObject myItem;
     public Material m_Normal, m_Selected;
-    int x, z;
+    public int x, z;
     public void Setup(Vector2 size, Vector3 pos, int x, int z)
     {
         this.x = x;
