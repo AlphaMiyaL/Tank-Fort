@@ -60,10 +60,6 @@ public class GameManager : MonoBehaviour
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
         if(m_RoundNumber == 0) SpawnAllTanks();
-
-        foreach (Shooting shoot in FindObjectsOfType<Shooting>()) {
-            shoot.changePause();
-        }
         
         //SetCameraTargets();
         // Once tanks have been created and camera is using them as targets, start game
@@ -149,6 +145,11 @@ public class GameManager : MonoBehaviour
         // As soon as round begins, let players control tanks
         EnableTankControl();
 
+        //Set Objects to turn on
+        foreach (PauseOnBuild pauser in FindObjectsOfType<PauseOnBuild>()) {
+            pauser.turnOn();
+        }
+
         // Clear text from screen
         m_MessageText.text = string.Empty;
 
@@ -162,8 +163,8 @@ public class GameManager : MonoBehaviour
     {
         // Stop tanks from moving, stops turrets from shooting
         DisableTankControl();
-        foreach (Shooting shoot in FindObjectsOfType<Shooting>()) {
-            shoot.changePause();
+        foreach (PauseOnBuild pauser in FindObjectsOfType<PauseOnBuild>()) {
+            pauser.turnOff();
         }
 
         // Clear winner from previous round
