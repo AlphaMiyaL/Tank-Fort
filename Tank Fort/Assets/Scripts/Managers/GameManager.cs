@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame()
     {
-        StartCoroutine(startGame());
+        StartCoroutine(GameStart());
     }
-    private IEnumerator startGame()
+    private IEnumerator GameStart()
     {
         TankTransition(true);
         yield return new WaitForSeconds(1);
@@ -173,8 +173,15 @@ public class GameManager : MonoBehaviour
         m_RoundWinner = GetRoundWinner();
 
         // If there is winner, increment their score
-        if (m_RoundWinner != null)
+        if (m_RoundWinner != null) {
             m_RoundWinner.m_Wins++;
+            foreach (Coin coin in FindObjectsOfType<Coin>()) {
+                if (coin.addPointTo != -1) {
+                    m_Tanks[coin.addPointTo - 1].m_Wins += 0.5;
+                    Destroy(coin.gameObject);
+                }
+            }
+        }
 
         // See if someone has won the game
         m_GameWinner = GetGameWinner();

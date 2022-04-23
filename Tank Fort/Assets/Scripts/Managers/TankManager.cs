@@ -10,17 +10,17 @@ public class TankManager
     public Color m_PlayerColor;                             // Color of tank
     public Transform m_SpawnPoint;                          // Position and direction tank will have when it spawns
     public CameraFollow m_Camera;                           // Reference to camera following player
+    public GameObject m_CameraTransform;                    // Reference to camera location
     [HideInInspector] public int m_PlayerNumber;            // Specifies which player manager is for
     [HideInInspector] public string m_ColoredPlayerText;    // String that represents player with their number colored to match tank
     [HideInInspector] public GameObject m_Instance;         // Reference to instance of tank when it is created
-    [HideInInspector] public int m_Wins;                    // Number of wins player has so far
+    [HideInInspector] public double m_Wins;                    // Number of wins player has so far
+    [HideInInspector] public int coinPoint;                 // Amount of coins collected
 
 
     private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable/enable control
     private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable/enable control
-    public GameObject m_CameraTransform;                      // Reference to camera location
     private GameObject m_CanvasGameObject;                  // Used to disable world space UI during Starting and Ending phases of each round
-
 
     public void Setup()
     {
