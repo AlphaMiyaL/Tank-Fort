@@ -19,11 +19,13 @@ public class TankMovement : MonoBehaviour{
     private float m_MovementInputValue;         // Current value of the movement input
     private float m_TurnInputValue;             // Current value of the turn input
     private float m_OriginalPitch;              // Pitch of the audio source at the start of scene   
+    private float m_OriginalSpeed;               // Original speed that will be set at beginning and reset when tank is killed
 
 
     //Runs once at very start of game
     private void Awake(){
         m_Rigidbody = GetComponent<Rigidbody>();
+        m_OriginalSpeed = m_Speed;
     }
 
 
@@ -34,6 +36,7 @@ public class TankMovement : MonoBehaviour{
         // Reset the input values
         m_MovementInputValue = 0f;
         m_TurnInputValue = 0f;
+        m_Speed = m_OriginalSpeed;
     }
 
 

@@ -8,8 +8,10 @@ public class PauseOnBuild : MonoBehaviour
     public GameObject turnOnOff;
 
     public void turnOn() {
-        turnOnOff.SetActive(true);
-        Rotate rotateScript = this.gameObject.GetComponent<Rotate>();
+        if (turnOnOff) {
+            turnOnOff.SetActive(true);
+        }
+        Rotate rotateScript = this.gameObject.GetComponentInChildren<Rotate>();
         //if current gameobject has a rotate script, turn it on
         if (rotateScript) {
             rotateScript.enabled = true;
@@ -18,8 +20,10 @@ public class PauseOnBuild : MonoBehaviour
     }
 
     public void turnOff() {
-        turnOnOff.SetActive(false);
-        Rotate rotateScript = this.gameObject.GetComponent<Rotate>();
+        if (turnOnOff) {
+            turnOnOff.SetActive(false);
+        }
+        Rotate rotateScript = this.gameObject.GetComponentInChildren<Rotate>();
         //if current gameobject has a rotate script, turn it off
         if (rotateScript) {
             rotateScript.enabled = false;
