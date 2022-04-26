@@ -49,6 +49,15 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(GameStart());
     }
+    public void SetPlayerSpawn(Vector3[] playerSpawnPoints, int [] playerSpawnRotations)
+    {
+        for(int i = 0; i < m_Tanks.Length; i += 1)
+        {
+            TankManager tm = m_Tanks[i];
+            tm.m_SpawnPoint.position = playerSpawnPoints[i];
+            tm.m_SpawnPoint.Rotate(playerSpawnRotations[i] * Vector3.up, Space.World);
+        }
+    }
     private IEnumerator GameStart()
     {
         TankTransition(true);
@@ -116,6 +125,7 @@ public class GameManager : MonoBehaviour
             // If there isn't winner yet, restart coroutine so loop continues
             // Note this coroutine doesn't yield;  This means current version of GameLoop will end
             //StartCoroutine(GameLoop());
+
             StartCoroutine(StartSelection());
         }
     }

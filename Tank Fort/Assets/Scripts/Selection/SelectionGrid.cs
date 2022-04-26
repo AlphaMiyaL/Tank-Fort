@@ -169,4 +169,63 @@ public class SelectionGrid : MonoBehaviour
         }
         
     }
+
+    public Vector3[] FindSafePlayerSpawn(int playerCount)
+    {
+        Vector3[] spawnPoints = new Vector3[playerCount];
+        List<SelectionQuad> validQuads = new List<SelectionQuad>();
+        List<SelectionQuad> itemQuads = new List<SelectionQuad>();
+        for(int x = 0; x <= selectionQuads.GetUpperBound(0); x += 1)
+        {
+            for(int y = 0; y <= selectionQuads.GetUpperBound(1); y += 1)
+            {
+                if(selectionQuads[x, y].validQuad)
+                {
+                    if (selectionQuads[x, y].myItem == null) validQuads.Add(selectionQuads[x, y]);
+                    else itemQuads.Add(selectionQuads[x, y]);
+                }
+                
+            }
+        }
+        bool done = false;
+        while (!done)
+        {
+            List<SelectionQuad> spawnQuads = new List<SelectionQuad>();
+            for(int i = 0; i < playerCount; i += 1)
+            {
+                int randQuad = Random.Range(0, validQuads.Count);
+                spawnQuads.Add(validQuads[randQuad]);
+            }
+
+            bool validPlacement = true;
+            foreach(SelectionQuad quad1 in spawnQuads)
+            {
+                foreach(SelectionQuad quad2 in spawnQuads)
+                {
+                    if (quad1 != quad2 && distance(quad1, quad2) < 5) validPlacement = false;
+                }
+            }
+
+            foreach(SelectionQuad quad1 in spawnQuads)
+            {
+                foreach(SelectionQuad item in itemQuads)
+                {
+                    if (distance(quad1, item) < 5) validPlacement = false;
+                }
+            }
+            if (validPlacement)
+            {
+                for(int i  = 0; i < playerCount; i += 1)
+                {
+                    spawnPoints[i] = spawnQuads[i].transform.position - groundOffset * Vector3.up;
+                }
+                done = true;
+            }
+        }
+        return spawnPoints;
+    }
+    private float distance(SelectionQuad grid1, SelectionQuad grid2)
+    {
+        return Vector2.Distance(grid1.transform.position, grid2.transform.position);
+    }
 }

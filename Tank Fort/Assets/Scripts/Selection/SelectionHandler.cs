@@ -19,12 +19,17 @@ public class SelectionHandler : MonoBehaviour
     private List<SelectionQuad> SelectedQuads = new List<SelectionQuad>();
     public bool clearItems;
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    //// Start is called before the first frame update
+    //void Start()
+    //{
        
-    }
+    //}
     
+    public Vector3[] FindSafePlayerSpawn()
+    {
+        int playerCount = FindObjectOfType<GameManager>().m_Tanks.Length;
+        return Grid.FindSafePlayerSpawn(playerCount);
+    }
 
     public void StartSelection()
     {
@@ -131,6 +136,15 @@ public class SelectionHandler : MonoBehaviour
         else
         {
             //game start
+            int[] rotations = { 0, 90, 180, 270 };
+            Vector3[] spawnPoints = FindSafePlayerSpawn();
+            int[] randomRotations = new int[spawnPoints.Length];
+            for(int i = 0; i < spawnPoints.Length; i += 1)
+            {
+                int rand = Random.Range(0, spawnPoints.Length);
+                randomRotations[i] = rotations[rand];
+            }
+            FindObjectOfType<GameManager>().SetPlayerSpawn(spawnPoints, randomRotations);
             FindObjectOfType<GameManager>().StartGame();
 
         }

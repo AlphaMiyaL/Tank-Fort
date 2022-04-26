@@ -7,6 +7,8 @@ public class SelectionQuad : MonoBehaviour
     public GameObject myItem;
     public Material m_Normal, m_Selected;
     public int x, z;
+    public Transform[] corners;
+    public bool validQuad;
     public void Setup(Vector2 size, Vector3 pos, int x, int z)
     {
         this.x = x;
@@ -16,17 +18,14 @@ public class SelectionQuad : MonoBehaviour
 
         RaycastHit hit;
         
-        if (Physics.Raycast(transform.position + Vector3.up * 10, Vector3.down, out hit))
-        { 
-            if (hit.transform != transform)
-            {
-                gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
+        if (!Physics.Raycast(transform.position + Vector3.up * 100, Vector3.down, out hit) || hit.transform != transform) gameObject.SetActive(false);
+        if (!Physics.Raycast(corners[0].position + Vector3.up * 100, Vector3.down, out hit) || hit.transform != transform) gameObject.SetActive(false);
+        if (!Physics.Raycast(corners[1].position + Vector3.up * 100, Vector3.down, out hit) || hit.transform != transform) gameObject.SetActive(false);
+        if (!Physics.Raycast(corners[2].position + Vector3.up * 100, Vector3.down, out hit) || hit.transform != transform) gameObject.SetActive(false);
+        if (!Physics.Raycast(corners[3].position + Vector3.up * 100, Vector3.down, out hit) || hit.transform != transform) gameObject.SetActive(false);
+
+        if (gameObject.activeSelf) validQuad = true;
+        else validQuad = false;
     }
 
     public Vector2Int GetIndex()
