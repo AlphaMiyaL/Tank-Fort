@@ -7,6 +7,7 @@ public class SelectionBoardUI : SelectionBoard
 {
     public SelectionObjectUI prefab;
     public Transform UIPanel;
+    public Vector2 buttonSize = new Vector2(125, 125);
     //protected override void handleMouseClick()
     //{
     //    //base.handleMouseClick();
@@ -25,8 +26,8 @@ public class SelectionBoardUI : SelectionBoard
         //}
         width = UIPanel.GetComponent<RectTransform>().sizeDelta.x;
         depth = UIPanel.GetComponent<RectTransform>().sizeDelta.y;
-        int xGrid = (int)(width / (2 * 50));
-        int yGrid = (int)(depth / (2 * 50));
+        int xGrid = (int)(width / buttonSize.x);
+        int yGrid = (int)(depth / buttonSize.y);
 
         for (int x = 0; x < xGrid; x += 1)
         {
@@ -35,7 +36,7 @@ public class SelectionBoardUI : SelectionBoard
                 positions.Add(new Vector2Int(x, y));
             }
         }
-        
+
         foreach (SelectionItem item in items)
         {
             int posIndex = Random.Range(0, positions.Count);
@@ -47,7 +48,7 @@ public class SelectionBoardUI : SelectionBoard
             button.GetComponent<Image>().enabled = true;
             button.GetComponent<Button>().enabled = true;
             Vector3 panelPos = UIPanel.GetComponent<RectTransform>().position;
-            button.GetComponent<RectTransform>().position = new Vector3(posInt.x * 100 - width/2, posInt.y * 100 - depth/2, 0) + panelPos;
+            button.GetComponent<RectTransform>().position = new Vector3(posInt.x * buttonSize.x - width / 2, posInt.y * buttonSize.y - depth / 2, 0) + panelPos;
         }
     }
 }

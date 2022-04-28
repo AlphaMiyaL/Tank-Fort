@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Text m_MessageText;                  // Reference to overlay Text to display winning text, etc.
     public GameObject m_TankPrefab;             // Reference to tank prefab
     public TankManager[] m_Tanks;               // Collection of managers for enabling/disabling different aspects of the tanks
+    public GameObject[] m_Maps;                 // Array of existing maps
 
 
     private int m_RoundNumber;                  // Which round game is currently on
@@ -26,6 +27,23 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        //Load PlayerPrefs
+        GetComponent<GamePreferencesManager>().LoadPrefs();
+        switch (GetComponent<GamePreferencesManager>().LoadMap()) {
+            case 0:
+                Instantiate(m_Maps[0]);
+                break;
+            case 1:
+                Instantiate(m_Maps[1]);
+                break;
+            case 2:
+                Instantiate(m_Maps[2]);
+                break;
+            case 3:
+                Instantiate(m_Maps[3]);
+                break;
+        }
+
         //StartCoroutine(TankTransition());
         StartCoroutine(StartSelection());
     }

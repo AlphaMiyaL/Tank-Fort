@@ -8,6 +8,8 @@ public class ManageScene : MonoBehaviour
     public Animator transition;
     public float transitionTime = 1f;
 
+
+
     public void PlayGame() {
         StartCoroutine(Loading(SceneManager.GetActiveScene().buildIndex + 1));
     }
