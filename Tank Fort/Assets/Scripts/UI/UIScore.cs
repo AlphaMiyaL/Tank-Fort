@@ -103,6 +103,11 @@ public class UIScore : MonoBehaviour
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].roundWin * roundWinLength;
                     currentAnimation = bar;
                 }
+                else
+                {
+                    scoreIndex += 1;
+                    setupNextScoreBar();
+                }
                 break;
             case 1:
                 if (playerScores[playerIndex].coinCount > 0)
@@ -112,6 +117,11 @@ public class UIScore : MonoBehaviour
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].coinCount * coinBarLength;
                     currentAnimation = bar;
                 }
+                else
+                {
+                    scoreIndex += 1;
+                    setupNextScoreBar();
+                }
                 break;
             case 2:
                 if (playerScores[playerIndex].underDogWin > 0)
@@ -120,6 +130,11 @@ public class UIScore : MonoBehaviour
                     bar.setup(playerScores[playerIndex].underDogWin * underDogLength, playerCurrentPos[playerIndex]);
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].underDogWin * underDogLength;
                     currentAnimation = bar;
+                }
+                else
+                {
+                    scoreIndex += 1;
+                    setupNextScoreBar();
                 }
                 break;
             case 3:
@@ -131,27 +146,42 @@ public class UIScore : MonoBehaviour
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].trapPoints * trapPointLength;
                     currentAnimation = bar;
                 }
-                break;
-            default:
-                if (playerIndex == playerCurrentPos.Length - 1 && scoreIndex == 3)
-                {
-                    currentAnimation = null;
-                    displaying = false;
-                }
                 else
                 {
-                    if (scoreIndex == 3)
+                    scoreIndex = 0;
+                    playerIndex += 1;
+                    if(playerIndex < playerCurrentPos.Length)
                     {
-                        playerIndex += 1;
-                        scoreIndex = 0;
+                        setupNextScoreBar();
                     }
                     else
                     {
-                        scoreIndex += 1;
+                        currentAnimation = null;
+                        displaying = false;
                     }
-                    setupNextScoreBar();
+                    
                 }
                 break;
+            //default:
+            //    if (playerIndex == playerCurrentPos.Length - 1 && scoreIndex == 3)
+            //    {
+            //        currentAnimation = null;
+            //        displaying = false;
+            //    }
+            //    else
+            //    {
+            //        if (scoreIndex == 3)
+            //        {
+            //            playerIndex += 1;
+            //            scoreIndex = 0;
+            //        }
+            //        else
+            //        {
+            //            scoreIndex += 1;
+            //        }
+            //        setupNextScoreBar();
+            //    }
+            //    break;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -131,12 +132,17 @@ public class GameManager : MonoBehaviour
         // Once execution has returned, run 'RoundEnding' coroutine, don't return until finished
         yield return StartCoroutine(RoundEnding());
 
+        
+    }
+
+    private void GameLoopEnding()
+    {
         // Code is not run until 'RoundEnding' finished; Check if game winner has been found
         if (m_GameWinner != null)
         {
             //If there is game winner, restart level
             //Application.LoadLevel(Application.loadedLevel);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(0);
         }
         else
         {
@@ -186,7 +192,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
     }
-
+    bool usingUIScore = true;
     private IEnumerator RoundEnding()
     {
         // Stop tanks from moving, stops turrets from shooting
@@ -201,17 +207,35 @@ public class GameManager : MonoBehaviour
         // See if there is winner since round is over
         m_RoundWinner = GetRoundWinner();
 
-        // If there is winner, increment their score
-        if (m_RoundWinner != null) {
-            m_RoundWinner.m_Wins++;
-            foreach (Coin coin in FindObjectsOfType<Coin>()) {
-                if (coin.addPointTo != -1) {
-                    m_Tanks[coin.addPointTo - 1].m_Wins += 0.5;
-                    Destroy(coin.gameObject);
+        if (usingUIScore)
+        {
+            handleUIScoreBar();
+        }
+        else
+        {
+            
+
+            // If there is winner, increment their score
+            if (m_RoundWinner != null)
+            {
+                m_RoundWinner.m_Wins++;
+                foreach (Coin coin in FindObjectsOfType<Coin>())
+                {
+                    if (coin.addPointTo != -1)
+                    {
+                        m_Tanks[coin.addPointTo - 1].m_Wins += 0.5;
+                        Destroy(coin.gameObject);
+                    }
                 }
             }
-        }
 
+            yield return StartCoroutine(RoundEnd());
+            
+        }
+        
+    }
+    private IEnumerator RoundEnd()
+    {
         // See if someone has won the game
         m_GameWinner = GetGameWinner();
 
@@ -221,6 +245,39 @@ public class GameManager : MonoBehaviour
 
         // Wait for specified length of time until yielding control back to game loop
         yield return m_EndWait;
+        GameLoopEnding();
+    }
+    public UIScore UIScorePanel;
+    private void handleUIScoreBar()
+    {
+        List<UIScorePlayer> scorePlayers = new List<UIScorePlayer>();
+        for(int i = 0; i < m_Tanks.Length; i += 1)
+        {
+            int win = 0;
+            int coins = 0;
+            int traps = 0;
+            int underDog = 0;
+            if (m_RoundWinner == m_Tanks[i])
+            {
+                win += 1;
+                m_RoundWinner.m_Wins += 1;
+            }
+            foreach (Coin coin in FindObjectsOfType<Coin>())
+            {
+                if (coin.addPointTo == i + 1)
+                {
+                    m_Tanks[coin.addPointTo - 1].m_Wins += 0.5;
+                    coins += 1;
+                    Destroy(coin.gameObject);
+                }
+            }
+            scorePlayers.Add(new UIScorePlayer(win, coins, underDog, traps));
+        }
+        UIScorePanel.DisplayScores(scorePlayers);
+    }
+    public void UIScoreCompleted()
+    {
+        StartCoroutine(RoundEnd());
     }
 
     // Used to check if one or fewer tanks remaining -> round should end
@@ -261,7 +318,7 @@ public class GameManager : MonoBehaviour
         // Go through all tanks, if one has enough rounds to win game, return it
         for (int i = 0; i < m_Tanks.Length; i++)
         {
-            if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
+            if (m_Tanks[i].m_Wins >= m_NumRoundsToWin)
                 return m_Tanks[i];
         }
 

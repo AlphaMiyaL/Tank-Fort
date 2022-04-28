@@ -118,7 +118,7 @@ public class SelectionHandler : MonoBehaviour
             }
             SelectedQuads.Clear();
         }
-        else
+        else if(SelectedQuads.Count <= 0)
         {
             Grid.BuildGrid();
         }

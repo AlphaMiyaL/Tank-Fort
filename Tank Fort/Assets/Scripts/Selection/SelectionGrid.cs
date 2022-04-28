@@ -187,6 +187,7 @@ public class SelectionGrid : MonoBehaviour
                 
             }
         }
+        Debug.Log($"selectionQuads.Length: {selectionQuads.Length} validQuads.Count: {validQuads.Count} itemQuads.Count: {itemQuads.Count}");
         bool done = false;
         while (!done)
         {
