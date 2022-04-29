@@ -24,8 +24,8 @@ public class SelectionBoardUI : SelectionBoard
         //{
         //    if (maxRadius < item.SelectionPrefab.GetComponent<SelectionObject>().Radius) maxRadius = item.SelectionPrefab.GetComponent<SelectionObject>().Radius;
         //}
-        width = UIPanel.GetComponent<RectTransform>().sizeDelta.x;
-        depth = UIPanel.GetComponent<RectTransform>().sizeDelta.y;
+        width = UIPanel.GetComponent<RectTransform>().sizeDelta.x*2;
+        depth = UIPanel.GetComponent<RectTransform>().sizeDelta.y*2;
         int xGrid = (int)(width / buttonSize.x);
         int yGrid = (int)(depth / buttonSize.y);
 

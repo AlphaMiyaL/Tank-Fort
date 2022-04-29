@@ -244,7 +244,9 @@ public class GameManager : MonoBehaviour
         m_MessageText.text = message;
 
         // Wait for specified length of time until yielding control back to game loop
-        yield return m_EndWait;
+        if (m_GameWinner!=null) {
+            yield return m_EndWait;
+        }
         GameLoopEnding();
     }
     public UIScore UIScorePanel;
@@ -334,16 +336,16 @@ public class GameManager : MonoBehaviour
 
         // If there is winner then change message
         if (m_RoundWinner != null)
-            message = m_RoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
+           message = "";
 
         // Add some line breaks after initial message
-        message += "\n\n\n\n";
+        //message += "\n\n\n\n";
 
         // Go through all tanks and add each of their scores to message
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
-        }
+        //for (int i = 0; i < m_Tanks.Length; i++)
+        //{
+        //    message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
+        //}
 
         // If there is game winner, change message
         if (m_GameWinner != null)
