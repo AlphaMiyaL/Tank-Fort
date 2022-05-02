@@ -14,8 +14,9 @@ public class TankManager
     [HideInInspector] public int m_PlayerNumber;            // Specifies which player manager is for
     [HideInInspector] public string m_ColoredPlayerText;    // String that represents player with their number colored to match tank
     [HideInInspector] public GameObject m_Instance;         // Reference to instance of tank when it is created
-    [HideInInspector] public double m_Wins;                    // Number of wins player has so far
+    [HideInInspector] public double m_Wins;                 // Number of wins player has so far
     [HideInInspector] public int coinPoint;                 // Amount of coins collected
+    [HideInInspector] public bool underdogUsed = false;     // Whether the player has gotten an underdog point before
 
 
     private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable/enable control

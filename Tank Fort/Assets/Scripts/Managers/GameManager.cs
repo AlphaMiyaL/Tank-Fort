@@ -263,6 +263,23 @@ public class GameManager : MonoBehaviour
             {
                 win += 1;
                 m_RoundWinner.m_Wins += 1;
+                if (!m_Tanks[i].underdogUsed) {
+                    bool underdogger = true;
+                    for (int j = 0; j < i; j++ ) {
+                        if (m_Tanks[j].m_Wins<m_Tanks[i].m_Wins+1.5) {
+                            underdogger = false;
+                        }
+                    }
+                    for (int j = i+1; j < m_Tanks.Length; j++) {
+                        if (m_Tanks[j].m_Wins < m_Tanks[i].m_Wins + 1.5) {
+                            underdogger = false;
+                        }
+                    }
+                    if (underdogger==true) {
+                        underDog++;
+                        m_Tanks[i].underdogUsed = true;
+                    }
+                }
             }
             foreach (Coin coin in FindObjectsOfType<Coin>())
             {
