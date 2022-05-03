@@ -10,7 +10,7 @@ public class SelectionItem : ScriptableObject
     public GameObject ObstaclePrefab;
     public Vector3 centerOffset;
     //public float ItemRadius = 1;
-    public Vector2 size;
+    public int size;
     public int damage = -1;
 
 }

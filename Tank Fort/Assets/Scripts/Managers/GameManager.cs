@@ -149,7 +149,10 @@ public class GameManager : MonoBehaviour
             // If there isn't winner yet, restart coroutine so loop continues
             // Note this coroutine doesn't yield;  This means current version of GameLoop will end
             //StartCoroutine(GameLoop());
-
+            foreach (TankManager tank in m_Tanks)
+            {
+                tank.Disable();
+            }
             StartCoroutine(StartSelection());
         }
     }
@@ -200,10 +203,11 @@ public class GameManager : MonoBehaviour
         foreach (PauseOnBuild pauser in FindObjectsOfType<PauseOnBuild>()) {
             pauser.turnOff();
         }
-
+        
         // Clear winner from previous round
         m_RoundWinner = null;
 
+        yield return new WaitForSeconds(0.25f);
         // See if there is winner since round is over
         m_RoundWinner = GetRoundWinner();
 

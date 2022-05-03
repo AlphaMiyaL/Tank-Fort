@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class UIScoreBar : MonoBehaviour
 {
+
     [SerializeField] Image image;
     [SerializeField] RectTransform rectTransform;
     public bool growing;
     [SerializeField] float speed = 100f;
     float targetLength = 100;
+    [SerializeField] Text Label;
     private void Update()
     {
         if (growing)
@@ -26,14 +28,17 @@ public class UIScoreBar : MonoBehaviour
             }
         }
     }
+    
 
     public void setup(float length)
     {
         Vector2 size = new Vector2(length, rectTransform.sizeDelta.y);
         setup(size);
     }
-    public void setup(float length, Vector2 pos)
+    public void setup(float length, Vector2 pos, string label)
     {
+
+        Label.text = label;
         Vector2 size = new Vector2(length, rectTransform.sizeDelta.y);
         setup(size, pos);
     }

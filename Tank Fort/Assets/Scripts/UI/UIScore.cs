@@ -26,7 +26,7 @@ public class UIScore : MonoBehaviour
     //    playerScores.Add(new UIScorePlayer(0, 0, 0, 0));
     //    playerScores.Add(new UIScorePlayer(0, 2, 0, 0));
     //    DisplayScores(playerScores);
-        
+
     //}
 
     private void Update()
@@ -99,7 +99,7 @@ public class UIScore : MonoBehaviour
                 if(playerScores[playerIndex].roundWin > 0)
                 {
                     UIScoreBar bar = Instantiate(RoundWinBarPrefab, transform);
-                    bar.setup(playerScores[playerIndex].roundWin * roundWinLength, playerCurrentPos[playerIndex]);
+                    bar.setup(playerScores[playerIndex].roundWin * roundWinLength, playerCurrentPos[playerIndex], "Win");
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].roundWin * roundWinLength;
                     currentAnimation = bar;
                 }
@@ -113,7 +113,7 @@ public class UIScore : MonoBehaviour
                 if (playerScores[playerIndex].coinCount > 0)
                 {
                     UIScoreBar bar = Instantiate(CoinBarPrefab, transform);
-                    bar.setup(playerScores[playerIndex].coinCount * coinBarLength, playerCurrentPos[playerIndex]);
+                    bar.setup(playerScores[playerIndex].coinCount * coinBarLength, playerCurrentPos[playerIndex], "Coin");
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].coinCount * coinBarLength;
                     currentAnimation = bar;
                 }
@@ -127,7 +127,7 @@ public class UIScore : MonoBehaviour
                 if (playerScores[playerIndex].underDogWin > 0)
                 {
                     UIScoreBar bar = Instantiate(UnderDogBarPrefab, transform);
-                    bar.setup(playerScores[playerIndex].underDogWin * underDogLength, playerCurrentPos[playerIndex]);
+                    bar.setup(playerScores[playerIndex].underDogWin * underDogLength, playerCurrentPos[playerIndex], "Under Dog");
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].underDogWin * underDogLength;
                     currentAnimation = bar;
                 }
@@ -142,7 +142,7 @@ public class UIScore : MonoBehaviour
                 {
                     UIScoreBar bar = Instantiate(TrapPointBarPrefab, transform);
                     
-                    bar.setup(playerScores[playerIndex].trapPoints * trapPointLength, playerCurrentPos[playerIndex]);
+                    bar.setup(playerScores[playerIndex].trapPoints * trapPointLength, playerCurrentPos[playerIndex], "Trap");
                     playerCurrentPos[playerIndex] = playerCurrentPos[playerIndex] + Vector2.right * playerScores[playerIndex].trapPoints * trapPointLength;
                     currentAnimation = bar;
                 }

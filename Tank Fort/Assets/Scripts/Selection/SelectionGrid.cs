@@ -14,7 +14,7 @@ public class SelectionGrid : MonoBehaviour
     public float afterSelectionDelay = 1;
     private float afterSelectionDelayStart;
     bool isSelecting;
-    public Vector2 itemSize;
+    public int itemSize;
     public Transform SelectedItem { set { selectedItem = value; } }
     private Transform selectedItem;
     public int RemoveRadius {
@@ -44,7 +44,7 @@ public class SelectionGrid : MonoBehaviour
         {
             handleGridSelection();
             //display item in correct quad
-            if (selectedQuad && (!selectedQuad.HasItem() || removingObstacles))
+            if (selectedQuad && (checkSize(selectedQuad) || removingObstacles))
             {
                 selectedItem.gameObject.SetActive(transform);
                 selectedItem.position = new Vector3(selectedQuad.transform.position.x, selectedItem.position.y, selectedQuad.transform.position.z);
@@ -82,8 +82,14 @@ public class SelectionGrid : MonoBehaviour
                 }
                 else
                 {
-                    FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(selectedQuad);
-                    selectedQuad.SetSelected(selectedItem.gameObject);
+                    List<SelectionQuad> selectedQuads = getSelectedQuads(selectedQuad);
+                    foreach(SelectionQuad quad in selectedQuads)
+                    {
+                        FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(quad);
+                        quad.SetSelected(selectedItem.gameObject);
+                    }
+                    
+                    
                 }
                 
                 isSelecting = false;
@@ -127,7 +133,7 @@ public class SelectionGrid : MonoBehaviour
                     selectedQuad = current;
                     //current.SetSelected(true);
                 }
-                if(!current.HasItem() || removingObstacles)current.SetSelected(true);
+                if(checkSize(current) || removingObstacles)current.SetSelected(true);
             }
             else if(selectedQuad)
             {
@@ -135,6 +141,37 @@ public class SelectionGrid : MonoBehaviour
                 selectedQuad = null;
             }
         }
+    }
+    private List<SelectionQuad> getSelectedQuads(SelectionQuad current)
+    {
+        List<SelectionQuad> selectedQuads = new List<SelectionQuad>();
+        int radius = itemSize / 2;
+        for (int x = current.x - radius; x <= current.x + radius; x += 1)
+        {
+            for (int z = current.z - radius; z <= current.z + radius; z += 1)
+            {
+                selectedQuads.Add(selectionQuads[x, z]);
+            }
+        }
+        return selectedQuads;
+    }
+    private bool checkSize(SelectionQuad current)
+    {
+        bool validSelection = true;
+        int radius = itemSize / 2;
+        
+        for(int x = current.x - radius; x <= current.x + radius; x += 1)
+        {
+            for (int z = current.z - radius; z <= current.z + radius; z += 1)
+            {
+                if(!selectionQuads[x,z].validQuad || selectionQuads[x, z].HasItem())
+                {
+                    validSelection = false;
+                }
+            }
+        }
+        Debug.Log($"itemSize: {radius} validSelection: {validSelection}");
+        return validSelection;
     }
     public void BuildGrid()
     {

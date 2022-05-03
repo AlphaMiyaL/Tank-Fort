@@ -80,4 +80,9 @@ public class TankManager
         m_Instance.SetActive(false);
         m_Instance.SetActive(true);
     }
+
+    public void Disable()
+    {
+        m_Instance.SetActive(false);
+    }
 }

@@ -33,6 +33,7 @@ public class SelectionHandler : MonoBehaviour
 
     public void StartSelection()
     {
+        currentPlayerPicking = 1;
         setupPlayers();
         setupItems();
         Board.gameObject.SetActive(true);
@@ -165,17 +166,20 @@ public class SelectionHandler : MonoBehaviour
     }
 
     #endregion
-
+    int currentPlayerPicking = 1;
     void getNextCurrentSelectionPlayer()
     {
         SelectionPlayer nextCurrent = null;
-        for(int i = 1; i < Players.Count; i += 1)
+        
+        for(int i = currentPlayerPicking; i < Players.Count; i += 1)
         {
             if (currentSelectionPlayer == Players[i - 1])
             {
                 nextCurrent = Players[i];
+                //Players.RemoveAt(i);
             }
         }
+        currentPlayerPicking += 1;
         currentSelectionPlayer = nextCurrent;
     }
 
@@ -189,15 +193,33 @@ public class SelectionHandler : MonoBehaviour
                 //newPlayer.ID = i;
                 Players.Add(newPlayer);
             }
+
+            
+            
         }
         
         
-        for(int i = 0; i < Players.Count; i += 1)
+        for(int i = 0; i < PlayerCount; i += 1)
         {
-            int rand = Random.Range(0, Players.Count);
+            int rand = Random.Range(0, PlayerCount);
             SelectionPlayer temp = Players[i];
             Players[i] = Players[rand];
             Players[rand] = temp;
+        }
+        if(PlayerCount == 2 && Players.Count == 2)
+        {
+            for (int i = 0; i < PlayerCount; i += 1)
+            {
+                Players.Add(Players[i]);
+            }
+
+        }
+        else if(PlayerCount == 2)
+        {
+            for (int i = PlayerCount; i < Players.Count; i += 1)
+            {
+                Players[i] = Players[i - PlayerCount];
+            }
         }
         currentSelectionPlayer = Players[0];
         displayPlayerSelection();
