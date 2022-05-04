@@ -11,6 +11,7 @@ public class ManageScene : MonoBehaviour
 
 
     public void PlayGame() {
+        transition.SetBool("Close", true);
         StartCoroutine(Loading(SceneManager.GetActiveScene().buildIndex + 1));
     }
 

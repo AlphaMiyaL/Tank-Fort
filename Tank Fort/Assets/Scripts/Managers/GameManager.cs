@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     private WaitForSeconds m_EndWait;           // Used to have a delay whilst round or game ends
     private TankManager m_RoundWinner;          // Reference to winner of current round; Used to make announcement of who won
     private TankManager m_GameWinner;           // Reference to winner of game; Used to make announcement of who won
+    private GameObject map;                     // Reference to current map
+    private int map_index;                      // Reference to current map's index
 
     public SelectionHandler SelectionHandler;
     public CameraSetup CameraSetup;
@@ -30,20 +32,8 @@ public class GameManager : MonoBehaviour
     {
         //Load PlayerPrefs
         GetComponent<GamePreferencesManager>().LoadPrefs();
-        switch (GetComponent<GamePreferencesManager>().LoadMap()) {
-            case 0:
-                Instantiate(m_Maps[0]);
-                break;
-            case 1:
-                Instantiate(m_Maps[1]);
-                break;
-            case 2:
-                Instantiate(m_Maps[2]);
-                break;
-            case 3:
-                Instantiate(m_Maps[3]);
-                break;
-        }
+        map_index = GetComponent<GamePreferencesManager>().LoadMap();
+        map = Instantiate(m_Maps[map_index]);
 
         //StartCoroutine(TankTransition());
         StartCoroutine(StartSelection());
@@ -56,6 +46,12 @@ public class GameManager : MonoBehaviour
     }
     public IEnumerator StartSelection()
     {
+        //Any map specific changes for build phase
+        switch (map_index) {
+            case 4:
+                map.transform.Find("Ceiling").gameObject.SetActive(false);
+                break;
+        }
         TankTransition(true);
         yield return new WaitForSeconds(1);
         m_MessageText.text = "";
@@ -165,6 +161,13 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator RoundStarting()
     {
+        //Any map specific changes for battle phase
+        switch (map_index) {
+            case 4:
+                map.transform.Find("Ceiling").gameObject.SetActive(true);
+                break;
+        }
+
         // As soon as round starts reset tanks and make sure they can't move
         ResetAllTanks();
         DisableTankControl();
