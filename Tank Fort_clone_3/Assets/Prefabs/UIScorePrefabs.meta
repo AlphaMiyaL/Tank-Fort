@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Tank Fort/Assets/Prefabs/UIScorePrefabs.meta
+guid: 35e8bee5cccb645479a96cf672b98800
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+========
+guid: 310532a370c6a90459cc619de88f1937
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+>>>>>>>> main:Tank Fort/Assets/Materials/Semi-Transparent.mat.meta
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
