@@ -7,6 +7,7 @@ public class TankManager
     // This class manages settings on a tank
     // Works with GameManager class to control how tanks behave and whether players have control of their tank in different phases of the game
 
+    public String m_SessionId;
     public Color m_PlayerColor;                             // Color of tank
     public Transform m_SpawnPoint;                          // Position and direction tank will have when it spawns
     public CameraFollow m_Camera;                           // Reference to camera following player
@@ -20,7 +21,7 @@ public class TankManager
 
 
     private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable/enable control
-    private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable/enable control
+    public TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable/enable control
     private GameObject m_CanvasGameObject;                  // Used to disable world space UI during Starting and Ending phases of each round
 
     public void Setup()
@@ -47,6 +48,9 @@ public class TankManager
             renderers[i].material.color = m_PlayerColor;
         }
 
+        if (GameSettingsManager.gamemode == "multiplayer"){
+            m_Camera = GameObject.Find("Player 1 Camera").GetComponent<CameraFollow>();
+        }
         //Set Camera target to current Tank
         m_CameraTransform = m_Instance.transform.Find("CameraTransform").gameObject;
         Transform target = m_CameraTransform.transform;
@@ -84,5 +88,9 @@ public class TankManager
     public void Disable()
     {
         m_Instance.SetActive(false);
+    }
+
+    public void DummyFire(float launchForce){
+        m_Instance.GetComponent<TankShooting>().DummyFire(launchForce);
     }
 }
