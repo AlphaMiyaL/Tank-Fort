@@ -78,7 +78,7 @@ public class SelectionHandler : MonoBehaviour
 
         Grid.RemoveRadius = currentSelectionPlayer.item.damage;
         Grid.SelectedItem = item.transform;
-
+        Grid.SelectionItem = currentSelectionPlayer.item;
         item.SetActive(false);
     }
 

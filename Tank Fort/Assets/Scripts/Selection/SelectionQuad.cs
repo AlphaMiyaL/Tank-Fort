@@ -5,6 +5,7 @@ using UnityEngine;
 public class SelectionQuad : MonoBehaviour
 {
     public GameObject myItem;
+    public SelectionItem mySelectionItem;
     public Material m_Normal, m_Selected;
     public int x, z;
     public Transform[] corners;
@@ -32,9 +33,10 @@ public class SelectionQuad : MonoBehaviour
     {
         return new Vector2Int(x, z);
     }
-    public void SetSelected(GameObject myItem)
+    public void SetSelected(GameObject myItem, SelectionItem mySelectionItem)
     {
         this.myItem = myItem;
+        this.mySelectionItem = mySelectionItem;
         SetSelected(false);
     }
 
@@ -54,6 +56,7 @@ public class SelectionQuad : MonoBehaviour
         {
             Destroy(myItem);
             myItem = null;
+            mySelectionItem = null;
         }
     }
 }
