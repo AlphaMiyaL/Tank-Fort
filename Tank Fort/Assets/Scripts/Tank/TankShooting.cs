@@ -14,12 +14,14 @@ public class TankShooting : MonoBehaviour
     public float m_MaxLaunchForce = 30f;        // The force given to shell if fire button is held for max charge time
     public float m_MaxChargeTime = 0.75f;       // How long shell can charge before it is auto fired at max force
     public bool m_IsDummy = false;
+    public float shootDelay = 0.5f;                 //  Delay between shots
 
 
     private string m_FireButton;                // Input axis used for launching shells
     private float m_CurrentLaunchForce;         // Force that will be given to shell when fire button is released
     private float m_ChargeSpeed;                // How fast launch force increases, based on max charge time
     private bool m_Fired;                       // Whether or not shell has been launched with this button press
+    private float lastTimeShot;                 // Records last time shot
 
 
     private void OnEnable(){
@@ -39,11 +41,13 @@ public class TankShooting : MonoBehaviour
 
         // Rate that launch force charges up is the range of possible forces by the max charge time
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
+        lastTimeShot = Time.time;
     }
 
     // Track current state of fire button and make decisions based on current launch force
     private void Update(){
-        if (!m_IsDummy){
+
+        if (!m_IsDummy && lastTimeShot+shootDelay<Time.time){
             m_AimSlider.value = m_MinLaunchForce;
 
             // Max charge but not fired
@@ -72,6 +76,7 @@ public class TankShooting : MonoBehaviour
             else if (Input.GetButtonUp(m_FireButton) && !m_Fired) {
                 //launch shell
                 Fire();
+                lastTimeShot=Time.time;
             }
         }
     }
