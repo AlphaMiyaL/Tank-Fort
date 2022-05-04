@@ -12,5 +12,8 @@ public class SelectionItem : ScriptableObject
     //public float ItemRadius = 1;
     public int size;
     public int damage = -1;
+    public int safeRadius;
+    public Vector3 FireDirection;
+    
 
 }

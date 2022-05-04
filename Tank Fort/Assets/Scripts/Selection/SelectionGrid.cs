@@ -17,6 +17,8 @@ public class SelectionGrid : MonoBehaviour
     public int itemSize;
     public Transform SelectedItem { set { selectedItem = value; } }
     private Transform selectedItem;
+    private SelectionItem selectionItem;
+    public SelectionItem SelectionItem { set { selectionItem = value; } }
     public int RemoveRadius {
         set
         {
@@ -61,7 +63,7 @@ public class SelectionGrid : MonoBehaviour
             }
 
             //place item with left click
-            if ((selectedQuad || !selectedQuad.HasItem()) && Input.GetMouseButtonDown(0))
+            if ((selectedQuad || checkSize(selectedQuad)) && Input.GetMouseButtonDown(0))
             {
                 if (removingObstacles)
                 {
@@ -79,22 +81,24 @@ public class SelectionGrid : MonoBehaviour
                         destroyObstacle(x - r, z + r);
                         destroyObstacle(x - r, z - r);
                     }
+                    isSelecting = false;
+
+                    StartCoroutine(finishSelection());
                 }
-                else
+                else if(selectedQuad && checkSize(selectedQuad))
                 {
                     List<SelectionQuad> selectedQuads = getSelectedQuads(selectedQuad);
                     foreach(SelectionQuad quad in selectedQuads)
                     {
                         FindObjectOfType<SelectionHandler>().PlayerSelectsQuad(quad);
-                        quad.SetSelected(selectedItem.gameObject);
+                        quad.SetSelected(selectedItem.gameObject, selectionItem);
                     }
-                    
-                    
+                    isSelecting = false;
+
+                    StartCoroutine(finishSelection());
                 }
                 
-                isSelecting = false;
                 
-                StartCoroutine(finishSelection());
             }
         }
     }
@@ -170,7 +174,7 @@ public class SelectionGrid : MonoBehaviour
                 }
             }
         }
-        Debug.Log($"itemSize: {radius} validSelection: {validSelection}");
+        //Debug.Log($"itemSize: {radius} validSelection: {validSelection}");
         return validSelection;
     }
     public void BuildGrid()
@@ -236,11 +240,17 @@ public class SelectionGrid : MonoBehaviour
             }
 
             bool validPlacement = true;
-            foreach(SelectionQuad quad1 in spawnQuads)
+            for(int i = 0; i < spawnQuads.Count; i += 1)
             {
-                foreach(SelectionQuad quad2 in spawnQuads)
+                for(int j = 0; j < spawnQuads.Count; j += 1)
                 {
-                    if (quad1 != quad2 && distance(quad1, quad2) < 5) validPlacement = false;
+                    if(i != j)
+                    {
+                        SelectionQuad quad1 = spawnQuads[i];
+                        SelectionQuad quad2 = spawnQuads[j];
+                        if (quad1 != quad2 && distance(quad1, quad2) < 5) validPlacement = false;
+                        if (quad1 == quad2) validPlacement = false;
+                    }
                 }
             }
 
@@ -248,7 +258,7 @@ public class SelectionGrid : MonoBehaviour
             {
                 foreach(SelectionQuad item in itemQuads)
                 {
-                    if (distance(quad1, item) < 5) validPlacement = false;
+                    if (checkDirection(quad1, item) && distance(quad1, item) < item.mySelectionItem.safeRadius) validPlacement = false;
                 }
             }
             if (validPlacement)
@@ -261,6 +271,36 @@ public class SelectionGrid : MonoBehaviour
             }
         }
         return spawnPoints;
+    }
+
+    private bool checkDirection(SelectionQuad playerQuad, SelectionQuad objectQuad)
+    {
+        if(objectQuad.mySelectionItem.FireDirection.y < 0)
+        {
+            Debug.Log(-objectQuad.myItem.transform.up);
+            Vector3 forward = -objectQuad.myItem.transform.up;
+            if (forward.x > 0)
+            {
+                if (playerQuad.x > objectQuad.x && playerQuad.z == objectQuad.z) return true;
+            }
+            else if(forward.x < 0)
+            {
+                if (playerQuad.x < objectQuad.x && playerQuad.z == objectQuad.z) return true;
+            }
+            else if(forward.z > 0)
+            {
+                if (playerQuad.x == objectQuad.x && playerQuad.z > objectQuad.z) return true;
+            }
+            else if(forward.z < 0)
+            {
+                if (playerQuad.x == objectQuad.x && playerQuad.z < objectQuad.z) return true;
+            }
+            return false;
+        }
+        else
+        {
+            return false;
+        }
     }
     private float distance(SelectionQuad grid1, SelectionQuad grid2)
     {
