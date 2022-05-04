@@ -48,8 +48,13 @@ public class TankMovement : MonoBehaviour{
 
     private void Start(){
         // The axes names are based on player number
-        m_MovementAxisName = "Vertical" + m_PlayerNumber;
-        m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        if (GameSettingsManager.gamemode == "multiplayer"){
+            m_MovementAxisName = "Vertical1";
+            m_TurnAxisName = "Horizontal1";
+        } else {
+            m_MovementAxisName = "Vertical" + m_PlayerNumber;
+            m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        }
 
         // Store the original pitch of the audio source
         m_OriginalPitch = m_MovementAudio.pitch;
@@ -106,12 +111,20 @@ public class TankMovement : MonoBehaviour{
         }
     }
 
-//Runs every in-game Physics step
-private void FixedUpdate(){
+    //Runs every in-game Physics step
+    private void FixedUpdate(){
         // Move and turn the tank.
         Move();
         Turn();
-
+        GameSettingsManager.room.Send("move", new {
+                    xPos = Mathf.Round(transform.position.x * 1000000.0f) * 0.000001f,
+                    yPos = Mathf.Round(transform.position.y * 1000000.0f) * 0.000001f,
+                    zPos = Mathf.Round(transform.position.z * 1000000.0f) * 0.000001f,
+                    xRot = transform.rotation.x,
+                    yRot = transform.rotation.y,
+                    zRot = transform.rotation.z,
+                    wRot = transform.rotation.w,
+                });
     }
 
 

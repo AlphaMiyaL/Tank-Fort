@@ -41,26 +41,35 @@ public class ShellExplosion : MonoBehaviour
                 // If no TankHealth script attached to gameobject, go on to next collider
                 if (!targetHealth)
                     continue;
+                
+                if (GameSettingsManager.gamemode == "multiplayer"){
+                    TankMovement targetMovement = targetRigidbody.GetComponent<TankMovement>();
+                    if (!targetMovement)
+                        continue;
+                }
 
-                // Calculate amount of damage target should take based on distance from shell
-                float damage = CalculateDamage(targetRigidbody.position);
+                    // Calculate amount of damage target should take based on distance from shell
+                    float damage = CalculateDamage(targetRigidbody.position);
 
+                // Unparent particles from the shell
+                // allows the explosion sound and particles to continue to happen after shell game object is deleted
+                m_ExplosionParticles.transform.parent = null;
+
+                // Play particle system and explosion sound effect
+                m_ExplosionParticles.Play();
+                m_ExplosionAudio.Play();
+
+                // Once particles have finished, destroy gameobject they are on
+                Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
+
+                // Destroy shell
+                Destroy(gameObject);
                 // Deal this damage to the tank
                 targetHealth.TakeDamage(damage);
+                if (GameSettingsManager.gamemode == "multiplayer"){
+                    GameSettingsManager.room.Send("self-dmg", damage);
+                }
             }
-            // Unparent particles from the shell
-            // allows the explosion sound and particles to continue to happen after shell game object is deleted
-            m_ExplosionParticles.transform.parent = null;
-
-            // Play particle system and explosion sound effect
-            m_ExplosionParticles.Play();
-            m_ExplosionAudio.Play();
-
-            // Once particles have finished, destroy gameobject they are on
-            Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
-
-            // Destroy shell
-            Destroy(gameObject);
         }
     }
 
@@ -68,7 +77,7 @@ public class ShellExplosion : MonoBehaviour
     // Calculate amount of damage target should take based on it's position
     private float CalculateDamage(Vector3 targetPosition){
         // Creating vector from shell to target
-        Vector3 explosionToTarget = targetPosition - transform.position;
+        Vector3 explosionToTarget = targetPosition - transform.position;    
 
         // Calculate distance from shell to target
         float explosionDistance = explosionToTarget.magnitude;
