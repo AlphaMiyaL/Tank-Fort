@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class TankMovement : MonoBehaviour{
+public class TankMovementMultiplayer : MonoBehaviour{
     public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player; This is set by this tank's manager
     public float m_Speed = 12f;                 // How fast the tank moves forward and back
     public float m_TurnSpeed = 180f;            // How fast the tank turns in degrees per second
@@ -116,6 +116,17 @@ public class TankMovement : MonoBehaviour{
         // Move and turn the tank.
         Move();
         Turn();
+        if (GameSettingsManager.gamemode == "multiplayer"){
+            GameSettingsManager.room.Send("move", new {
+                xPos = Mathf.Round(transform.position.x * 1000000.0f) * 0.000001f,
+                yPos = Mathf.Round(transform.position.y * 1000000.0f) * 0.000001f,
+                zPos = Mathf.Round(transform.position.z * 1000000.0f) * 0.000001f,
+                xRot = transform.rotation.x,
+                yRot = transform.rotation.y,
+                zRot = transform.rotation.z,
+                wRot = transform.rotation.w,
+            });
+        }
     }
 
 

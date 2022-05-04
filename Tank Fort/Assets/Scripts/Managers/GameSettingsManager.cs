@@ -16,7 +16,7 @@ public class GameSettingsManager: MonoBehaviour {
     public static string lobbyId = "";
 
     // "multiplayer" or "local"
-    public static string gamemode = "multiplayer";
+    public static string gamemode = "";
 
     // set before loading into scene. remember this will be map dependent! 
     public static int minPlayerCount = 2;
