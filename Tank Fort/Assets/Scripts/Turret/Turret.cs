@@ -68,6 +68,11 @@ public class Turret : MonoBehaviour
         newState.Enter(this);
     }
 
+    public void Reset() {
+        Target = null;
+        ChangeState(new IdleState());
+    }
+
     private void OnTriggerEnter(Collider other) {
         currentState.OnTriggerEnter(other);
     }

@@ -153,6 +153,11 @@ public class GameManager : MonoBehaviour
             {
                 tank.Disable();
             }
+
+            //reset all Turrets (so they do not keep any existing targets)
+            foreach (Turret turret in FindObjectsOfType<Turret>()) {
+                turret.Reset();
+            }
             StartCoroutine(StartSelection());
         }
     }
@@ -217,8 +222,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            
-
             // If there is winner, increment their score
             if (m_RoundWinner != null)
             {
