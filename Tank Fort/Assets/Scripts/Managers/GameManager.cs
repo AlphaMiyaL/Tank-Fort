@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
         switch (map_index) {
             case 4:
                 map.transform.Find("Ceiling").gameObject.SetActive(false);
+                SelectionHandler.smallMap=true;
                 break;
         }
         TankTransition(true);

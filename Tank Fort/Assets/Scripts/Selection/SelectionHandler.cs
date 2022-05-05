@@ -18,12 +18,7 @@ public class SelectionHandler : MonoBehaviour
     public Text PlayerSelectingText;
     private List<SelectionQuad> SelectedQuads = new List<SelectionQuad>();
     public bool clearItems;
-
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-       
-    //}
+    [HideInInspector] public bool smallMap = false;
     
     public Vector3[] FindSafePlayerSpawn()
     {
@@ -206,7 +201,7 @@ public class SelectionHandler : MonoBehaviour
             Players[i] = Players[rand];
             Players[rand] = temp;
         }
-        if(PlayerCount == 2 && Players.Count == 2)
+        if(PlayerCount == 2 && Players.Count == 2 && !smallMap)
         {
             for (int i = 0; i < PlayerCount; i += 1)
             {
