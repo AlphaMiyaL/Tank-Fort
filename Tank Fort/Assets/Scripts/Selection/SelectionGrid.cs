@@ -196,6 +196,7 @@ public class SelectionGrid : MonoBehaviour {
         }
         Debug.Log($"selectionQuads.Length: {selectionQuads.Length} validQuads.Count: {validQuads.Count} itemQuads.Count: {itemQuads.Count}");
         bool done = false;
+        int timesRun = 0;
         while (!done) {
             List<SelectionQuad> spawnQuads = new List<SelectionQuad>();
             for (int i = 0; i < playerCount; i += 1) {
@@ -225,6 +226,15 @@ public class SelectionGrid : MonoBehaviour {
                     spawnPoints[i] = spawnQuads[i].transform.position - groundOffset * Vector3.up;
                 }
                 done = true;
+            }
+            else if(timesRun>200){
+                for (int i = 0; i < playerCount; i += 1) {
+                    spawnPoints[i] = new Vector3(i*15, 15, i*15);
+                }
+                done = true;
+            }
+            else {
+                timesRun++;
             }
         }
         return spawnPoints;
